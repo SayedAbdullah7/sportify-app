@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\Admin;
+use App\Models\StadiumOwner;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
@@ -13,7 +13,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class AdminsDataTable extends DataTable
+class StadiumOwnerDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -23,8 +23,8 @@ class AdminsDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', function (Admin $model) {
-                return view('pages.admin.columns._actions', ['model'=>$model,'route_name'=>'admin']);
+            ->addColumn('action', function (StadiumOwner $model) {
+                return view('pages.admin.columns._actions', ['model'=>$model,'route_name'=>'stadium-owner']);
             })
             ->editColumn('created_at', function($data){
                 return Carbon::parse($data->created_at)->toDateTimeString();
@@ -33,16 +33,14 @@ class AdminsDataTable extends DataTable
                 return Carbon::parse($data->updated_at)->toDateTimeString();
             })
             ->setRowId('id');
-//        ->addColumn('action', 'admins.action')
-//        ->setRowId('id');
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(Admin $model): QueryBuilder
+    public function query(StadiumOwner $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->orderByDesc('id');
     }
 
     /**
@@ -54,17 +52,9 @@ class AdminsDataTable extends DataTable
                     ->setTableId('table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-//                    ->dom('Bfrtip')
+                    //->dom('Bfrtip')
                     ->orderBy(1)
                     ->selectStyleSingle();
-//                    ->buttons([
-//                        Button::make('excel'),
-//                        Button::make('csv'),
-//                        Button::make('pdf'),
-//                        Button::make('print'),
-//                        Button::make('reset'),
-//                        Button::make('reload')
-//                    ]);
     }
 
     /**
@@ -75,7 +65,7 @@ class AdminsDataTable extends DataTable
         return [
             Column::make('id'),
             Column::make('name'),
-            Column::make('username'),
+            Column::make('phone'),
             Column::make('created_at'),
             Column::make('updated_at'),
             Column::computed('action')
@@ -91,6 +81,6 @@ class AdminsDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Admins_' . date('YmdHis');
+        return 'StadiumOwner_' . date('YmdHis');
     }
 }

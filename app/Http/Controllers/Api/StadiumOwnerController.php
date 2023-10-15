@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\DataTables\AdminsDataTable;
 use App\DataTables\StadiumOwnerDataTable;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StadiumOwnerRequest;
 use App\Models\StadiumOwner;
 use Illuminate\Http\Request;
@@ -13,9 +14,9 @@ class StadiumOwnerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(StadiumOwnerDataTable $dataTable)
+    public function index()
     {
-        return $dataTable->render('pages.stadium_owner.index');
+        //
     }
 
     /**
@@ -23,7 +24,7 @@ class StadiumOwnerController extends Controller
      */
     public function create()
     {
-        return view('pages.stadium_owner.form',['action'=>route('stadium-owner.store')]);
+        //
     }
 
     /**
@@ -31,8 +32,7 @@ class StadiumOwnerController extends Controller
      */
     public function store(StadiumOwnerRequest $request)
     {
-        StadiumOwner::create($request->all());
-        return response()->json(['status'=>true,'msg'=>'successfully created']);
+        //
     }
 
     /**
@@ -48,7 +48,7 @@ class StadiumOwnerController extends Controller
      */
     public function edit(StadiumOwner $stadiumOwner)
     {
-        return view('pages.stadium_owner.form',['model'=>$stadiumOwner,'action'=>route('stadium-owner.update',$stadiumOwner->id)]);
+        //
     }
 
     /**
@@ -56,8 +56,8 @@ class StadiumOwnerController extends Controller
      */
     public function update(Request $request, StadiumOwner $stadiumOwner)
     {
-        $stadiumOwner->update($request->all());
-        return response()->json(['status'=>true,'msg'=>'successfully updated']);
+        //
+
     }
 
     /**

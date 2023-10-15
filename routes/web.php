@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::resource('admin', \App\Http\Controllers\AdminController::class);
+Route::resource('stadium-owner', \App\Http\Controllers\StadiumOwnerController::class);
 
 Route::get('/home', function () {
     return view('welcome');

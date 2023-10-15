@@ -28,6 +28,7 @@
 {{--    @vite(['resources/js/app.js','resources/sass/app.sass'])--}}
 {{--    @vite(['resources/js/app.js'])--}}
     @vite(['resources/sass/app.sass'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 </head>
 <body>
 <!--wrapper-->
@@ -49,54 +50,13 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="ms-auto">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary">Settings</button>
-                        <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">	<a class="dropdown-item" href="javascript:;">Action</a>
-                            <a class="dropdown-item" href="javascript:;">Another action</a>
-                            <a class="dropdown-item" href="javascript:;">Something else here</a>
-                            <div class="dropdown-divider"></div>	<a class="dropdown-item" href="javascript:;">Separated link</a>
-                        </div>
-                    </div>
-                </div>
             </div>
             <!--end breadcrumb-->
             <div class="row">
                 @yield('content')
 {{--                {{ $slot }}--}}
             </div>
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm">
-                Launch demo modal
-            </button>
-
-            <!-- Modal -->
-
-            <!-- Modal -->
-            <div class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="modalFormLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Add an SVG loader -->
-                            <div id="loader" style="display: none;height: 370px;">
-                                <img alt="" src="{{ asset('images/gif/loading.gif') }}" height="370" width="100%">
-                            </div>
-                            <!-- End SVG loader -->
-                            <div id="content"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="ajaxButton">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @include('include.modal')
             <!--end row-->
         </div>
     </div>
@@ -123,38 +83,13 @@
 <script src="{{asset('assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js')}}"></script>
 <script src="{{asset('assets/plugins/datatable/js/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('assets/plugins/datatable/js/dataTables.bootstrap5.min.js')}}"></script>
-
+<script src="{{asset('assets/plugins/notifications/js/lobibox.min.js')}}"></script>
+<script src="{{asset('assets/plugins/notifications/js/notifications.min.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <!--app JS-->
     <script src="{{asset('assets/js/app.js')}}"></script>
 {{--    @vite(['resources/js/app.js'])--}}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // document.addEventListener('DOMContentLoaded', function() {
-        // $(document).on('click','.element',function(){
-        //
-        //     alert('Clicked');
-        //
-        // });
-        $(document).on('click', '.has_action', function () {
-            $("#loader").show();
-            $("#modalForm").modal('show');
-            var url = $(this).data('action');
-            console.log(url)
-            $.ajax({
-                type: 'GET',
-                url: url,
-                success: function (data) {
-                    console.log(data)
-                    $('#modalForm #content').html(data);
-                    $('#loader').hide();
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        });
-    });
-</script>
+<script src="{{asset('js/main.js')}}"></script>
 @stack('scripts')
 </body>
 

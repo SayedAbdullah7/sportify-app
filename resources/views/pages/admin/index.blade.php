@@ -1,14 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <div class="card">
-            <div class="card-header">Manage Users</div>
-            <div class="card-body" style="overflow: scroll">
-                {{ $dataTable->table() }}
-            </div>
-        </div>
-    </div>
+    <x-table>
+        {{ $dataTable->table() }}
+    </x-table>
 @endsection
 
 @push('scripts')
