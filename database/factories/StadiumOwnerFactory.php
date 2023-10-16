@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\StadiumOwner>
@@ -19,7 +20,7 @@ class StadiumOwnerFactory extends Factory
         $faker = \Faker\Factory::create('ar_EG'); // for Arabic
         return [
             'name' => $faker->name(),
-            'phone'=> $faker->unique()->phoneNumber(),
+            'phone'=> $removed = Str::remove('+', $faker->unique()->e164PhoneNumber()),
         ];
     }
 }

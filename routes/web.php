@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Resources\StadiumOwnerResource;
+use App\Models\StadiumOwner;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,5 +35,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+Route::get('/test', function () {
+    $model = StadiumOwner::first();
+    $array = new StadiumOwnerResource($model);
+    return dd($array);
+});
 require __DIR__.'/auth.php';

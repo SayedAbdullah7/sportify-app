@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::middleware([])->prefix('stadium-owner')->group(function () {
+    //login and
+    Route::get('/generate-otp-availability', [\App\Http\Controllers\Api\StadiumOwnerController::class, 'generateOtpAvailability']);
+    Route::get('/generate-otp', [\App\Http\Controllers\Api\StadiumOwnerController::class, 'generateOtp']);
+    Route::get('/verify-otp', [\App\Http\Controllers\Api\StadiumOwnerController::class, 'verifyOtp']);
+});

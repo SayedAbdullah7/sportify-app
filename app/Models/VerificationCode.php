@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class VerificationCode extends Model
 {
     use HasFactory;
+    protected $fillable = ['otp','expire_at'];
 
     public function verifiable()
     {

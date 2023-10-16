@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class StadiumOwner extends Authenticatable
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
     /**
      * The attributes that are mass assignable.
      *
@@ -24,7 +26,7 @@ class StadiumOwner extends Authenticatable
      */
     public function verificationCodes(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        return $this->morphMany('App\VerificationCode', 'verifiable');
+        return $this->morphMany(VerificationCode::class, 'verifiable');
     }
 
 }
