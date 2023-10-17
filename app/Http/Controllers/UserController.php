@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\DataTables\AdminsDataTable;
 use App\DataTables\UserDataTable;
+use App\Models\StadiumOwner;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     public function index(UserDataTable $dataTable)
     {
-        return $dataTable->render('pages.admin.index');
+        return $dataTable->render('pages.user.index');
 
     }
 
@@ -41,9 +43,9 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
+        return view('pages.user.form',['model'=>$user,'action'=>route('user.update',$user->id)]);
     }
 
     /**

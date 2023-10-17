@@ -38,17 +38,23 @@ class ApiResponseServiceProvider extends ServiceProvider
                 $errors_in_format = [$errors];
 
             }else{
-                $errors_in_format = [];
-                array_walk_recursive($errors, static function ($error) use (&$errors_in_format) {
-                    $errors_in_format[] = $error;
-                });
+                $formattedErrors = [];
+
+                foreach ($errors as $key => $value) {
+                    $formattedErrors[$key] = $value[0];
+                }
+            }
+            $formattedErrors = [];
+
+            foreach ($errors as $key => $value) {
+                $formattedErrors[$key] = $value[0];
             }
 
             return $response->json([
                 'status' => false,
                 'msg' => $msg,
                 'data' => array(),
-                'errors' => $errors_in_format,
+                'errors' => $formattedErrors ,
                 ], $status);
         });
 

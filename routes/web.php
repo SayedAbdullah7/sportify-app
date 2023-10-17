@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::resource('user', \App\Http\Controllers\UserController::class);
 Route::resource('admin', \App\Http\Controllers\AdminController::class);
 Route::resource('stadium-owner', \App\Http\Controllers\StadiumOwnerController::class);
 

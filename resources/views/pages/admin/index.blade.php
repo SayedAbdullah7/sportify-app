@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-table>
+    <x-table title="admin table" createRoute="{{route('stadium-owner.create')}}">
         {{ $dataTable->table() }}
     </x-table>
 @endsection

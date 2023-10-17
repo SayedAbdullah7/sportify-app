@@ -2,7 +2,9 @@
 
 namespace App\DataTables;
 
+use App\Models\Admin;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -22,7 +24,15 @@ class UserDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'user.action')
+            ->addColumn('action', function (User $model) {
+                return view('pages.user.columns._actions', ['model'=>$model,'route_name'=>'user']);
+            })
+            ->editColumn('created_at', function($data){
+                return Carbon::parse($data->created_at)->toDateTimeString();
+            })
+            ->editColumn('updated_at', function($data){
+                return Carbon::parse($data->updated_at)->toDateTimeString();
+            })
             ->setRowId('id');
     }
 
@@ -40,20 +50,12 @@ class UserDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('user-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+//                    ->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle();
     }
 
     /**
@@ -62,15 +64,16 @@ class UserDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
             Column::make('id'),
-            Column::make('add your columns'),
+            Column::make('name'),
+            Column::make('username'),
             Column::make('created_at'),
             Column::make('updated_at'),
+            Column::computed('action')
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
         ];
     }
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-table>
+    <x-table title="users table" :createRoute="route('user.create')" >
         {{ $dataTable->table() }}
     </x-table>
 @endsection

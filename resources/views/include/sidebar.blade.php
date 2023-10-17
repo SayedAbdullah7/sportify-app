@@ -50,10 +50,17 @@
         </li>
         <li class="menu-label">UI Elements</li>
         <li>
-            <a href="widgets.html">
+            <a href="{{asset(route('stadium-owner.index'))}}">
                 <div class="parent-icon"><i class='bx bx-cookie'></i>
                 </div>
-                <div class="menu-title">Widgets</div>
+                <div class="menu-title">Stadium Owners</div>
+            </a>
+        </li>
+        <li>
+            <a href="{{asset(route('user.index'))}}">
+                <div class="parent-icon"><i class='bx bx-cookie'></i>
+                </div>
+                <div class="menu-title">Users</div>
             </a>
         </li>
         <li class="menu-label">Charts & Maps</li>
