@@ -4,6 +4,7 @@
     @endisset
     @csrf
     <x-text-input label="name" name="name" value="{{isset($model)?$model->name:''}}"></x-text-input>
+
     <x-text-input label="phone" name="phone" value="{{isset($model)?$model->phone:''}}"></x-text-input>
 
     <input type="submit" class="btn btn-primary" id="submit" value="Save changes">
