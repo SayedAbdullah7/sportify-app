@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     public function index()
     {
@@ -25,14 +25,11 @@ class UserController extends Controller
     {
         // Check parameters
         if(!$request->phone){
-            return response()->error('invalid parameter');
+            return $this->handleError('invalid parameter');
         }
 
         // Check model exited to determine its login or register
         $user = User::where('phone',$request->phone)->first();
-//        if ($user){
-//            return response()->error('already registered');
-//        }
 
         // Check availability to generate OTP
         $now = Carbon::now();
@@ -42,11 +39,12 @@ class UserController extends Controller
             $verificationCodes = VerificationCode::where('phone',$request->phone)->get();
         }
         if ($verificationCodes->count() >= 3 && $now->subHour()->isBefore($verificationCodes->last()->created_at)){
-            return response()->error('blocked');
+//            return $this->handleError('blocked');
+            return $this->handleError('blocked');
         }
 
         // Generate OTP with gateway
-        $otp = '1234';
+        $otp = '123456';
 
 
         // Store the OTP
@@ -66,14 +64,14 @@ class UserController extends Controller
         }
 
 
-        return response()->success('done');
+        return $this->handleResponse('done');
     }
 
     public function verifyOtp(Request $request)
     {
         // Check parameters
-        if(!$request->phone || !$request->device_token || strlen($request->otp) !== 4){
-            return response()->error('invalid parameter');
+        if(!$request->phone || !$request->device_token || strlen($request->otp) !== 6){
+            return $this->handleError('invalid parameter');
         }
 
         // Check model exited to determine its login or register
@@ -94,12 +92,18 @@ class UserController extends Controller
             first();
         }
         if(!$verificationCode){
-            return response()->error('not valid');
+            return $this->handleError('not valid');
         }
 
         if($user) {  //login
             // Delete all the old OTPs for this stadiumOwner
             $user->verificationCodes()->delete();
+
+            $token = $user->createToken('app-token')->plainTextToken;
+            $response = [
+                'user'=>new UserResource($user),
+                'token'=>$token
+            ];
 
         }else{      //register
             // update verificationCode
@@ -109,11 +113,12 @@ class UserController extends Controller
             ]);
             // Delete all the old OTPs for this number
             VerificationCode::where('phone',$request->phone)->whereNot('id',$verificationCode->id)->delete();
+            $response = [];
         }
 
 
 
-        return response()->success('verified successfully',$user?new UserResource($user):[]);
+        return $this->handleResponse('verified successfully',$response);
     }
 
     /**
@@ -123,7 +128,7 @@ class UserController extends Controller
     {
         // Check parameters
         if(!$request->phone || !$request->device_token){
-            return response()->error('invalid parameter');
+            return $this->handleError('invalid parameter');
         }
 
         // check phone verify
@@ -136,12 +141,12 @@ class UserController extends Controller
         latest()->first();
 
         if(!$verificationCode){
-            return response()->error('phone not verified');
+            return $this->handleError('phone not verified');
         }
 
         $validateUser = Validator::make($request->all(),
         [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|regex:/(^[A-Za-z0-9 ]+$)+/|max:255',
             'username' => 'nullable|string|unique:users|max:255',
             'gender' => 'required|boolean',
             'day_of_birth' => 'required|date',
@@ -150,7 +155,7 @@ class UserController extends Controller
         ]);
 
         if($validateUser->fails()){
-            return response()->error('validation error',$validateUser->errors()->toArray());
+            return $this->handleError('validation error',$validateUser->errors()->toArray());
         }
 
         // Create new model
@@ -168,8 +173,12 @@ class UserController extends Controller
         // Delete all the OTPs for this number
         VerificationCode::where('phone',$verificationCode->phone)->delete();
 
-
-        return response()->success('successfully logged in',new UserResource($user));
+        $token = $user->createToken('app-token')->plainTextToken;
+        $response = [
+            'user'=>new UserResource($user),
+            'token'=>$token
+        ];
+        return $this->handleResponse('successfully logged in',$response);
     }
 
     /**

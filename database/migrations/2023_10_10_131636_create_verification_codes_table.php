@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('verification_codes', function (Blueprint $table) {
             $table->id();
             $table->string('phone',25)->nullable();
-            $table->string('otp',4);
+            $table->string('otp',6);
             $table->dateTime('expire_at');
             $table->unsignedBigInteger('verifiable_id')->nullable();
             $table->string('verifiable_type')->nullable();

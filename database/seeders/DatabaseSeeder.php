@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\StadiumType;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,7 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminSeeder::class,
-            StadiumOwnerSeeder::class
+            StadiumOwnerSeeder::class,
+            StadiumTypeSeeder::class
         ]);
         // \App\Models\User::factory(10)->create();
 

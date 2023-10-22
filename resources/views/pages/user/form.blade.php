@@ -1,7 +1,7 @@
 {!! Form::open(['url' => 'foo/bar']) !!}
 <form class="row g-3">
 {{--    <x-input-text></x-input-text>--}}
-    <x-text-input label="name" name="name" value=""></x-text-input>
+    <x-forms.text-input label="name" name="name" value=""></x-forms.text-input>
     <div class="col-md-6">
         <label for="inputLastName2" class="form-label">Last Name</label>
         <div class="input-group"> <span class="input-group-text bg-transparent"><i class='bx bxs-user'></i></span>

@@ -26,6 +26,14 @@ class StadiumOwnerController extends Controller
         return view('pages.stadium_owner.form',['action'=>route('stadium-owner.store')]);
     }
 
+    public function uploadImage(Request $request)
+    {
+        $file = $request->file('image');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads'), $filename);
+
+        return response()->json(['filename' => $filename]);
+    }
     /**
      * Store a newly created resource in storage.
      */

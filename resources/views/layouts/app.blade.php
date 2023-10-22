@@ -4,6 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!--favicon-->
     <link rel="icon" href="{{asset('assets/images/favicon-32x32.png')}}" type="image/png" />
     <!--plugins-->
@@ -24,6 +25,7 @@
     <link rel="stylesheet" href="{{asset('assets/css/semi-dark.css')}}" />
     <link rel="stylesheet" href="{{asset('assets/css/header-colors.css')}}" />
     <link href="{{asset('assets/fontawesome/css/all.css')}}" rel="stylesheet" />
+
     <title>Amdash - Bootstrap 5 Admin Template</title>
 {{--    @vite(['resources/js/app.js','resources/sass/app.sass'])--}}
 {{--    @vite(['resources/js/app.js'])--}}

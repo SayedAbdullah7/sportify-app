@@ -78,7 +78,7 @@ class StadiumOwnerController extends Controller
     public function verifyOtp(Request $request)
     {
         // Check parameters
-        if(!$request->phone || strlen($request->otp) !== 4){
+        if(!$request->phone || strlen($request->otp) !== 6){
             return response()->error('invalid parameter');
         }
 
