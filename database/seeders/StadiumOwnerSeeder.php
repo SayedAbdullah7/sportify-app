@@ -15,9 +15,9 @@ class StadiumOwnerSeeder extends Seeder
     public function run(): void
     {
         if (StadiumOwner::count() < 1){
-            StadiumOwner::factory()
-                ->count(15)
-                ->create();
+//            StadiumOwner::factory()
+//                ->count(15)
+//                ->create();
         }
 
     }

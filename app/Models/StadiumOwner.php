@@ -29,4 +29,9 @@ class StadiumOwner extends Authenticatable
         return $this->morphMany(VerificationCode::class, 'verifiable');
     }
 
+    public function stadium()
+    {
+        return $this->hasOne(Stadium::class, 'stadium_owner_id');
+    }
+
 }

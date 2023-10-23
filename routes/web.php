@@ -41,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('user', \App\Http\Controllers\UserController::class);
     Route::resource('admin', \App\Http\Controllers\AdminController::class);
     Route::resource('stadium-owner', \App\Http\Controllers\StadiumOwnerController::class);
+    Route::resource('sport', \App\Http\Controllers\SportsController::class);
+    Route::resource('stadium-type', \App\Http\Controllers\StadiumTypeController::class);
 
     Route::post('/upload-image', [\App\Http\Controllers\StadiumOwnerController::class,'uploadImage'])->name('upload-image');
 

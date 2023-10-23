@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('sport_stadia', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Sport::class);
-            $table->foreignIdFor(\App\Models\Stadium::class);
+            $table->foreignIdFor(\App\Models\Sport::class)->constrained();
+            $table->foreignIdFor(\App\Models\Stadium::class)->constrained();
             $table->timestamps();
 
         });
@@ -25,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('sport_stadia', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('sport_stadia');
     }
 };

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\SportDataTable;
 use App\Http\Requests\StoreSportsRequest;
 use App\Http\Requests\UpdateSportsRequest;
 use App\Models\Sports;
@@ -11,9 +12,9 @@ class SportsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(SportDataTable $dataTable)
     {
-        //
+        return $dataTable->render('pages.admin.index');
     }
 
     /**

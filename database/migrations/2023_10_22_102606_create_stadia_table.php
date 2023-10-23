@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('stadia', function (Blueprint $table) {
             $table->id();
-            $table->string('stadia_type_id');
-            $table->string('location_link');
-            $table->string('longitude');
-            $table->string('latitude');
+            $table->string('name');
+            $table->string('location_link')->nullable();
+            $table->string('longitude')->nullable();
+            $table->string('latitude')->nullable();
+            $table->foreignIdFor(\App\Models\StadiumType::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\StadiumOwner::class)->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

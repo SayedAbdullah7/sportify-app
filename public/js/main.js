@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dataType: "json",
             data: $(this).serialize(),
             success: function (data) {
-                // console.log(data)
+                console.log(data)
                 info_noti(data.msg,data.status?'success':'danger')
                 modalControl(0);
             $('#table').DataTable().ajax.reload();
@@ -86,6 +86,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 // });
             },
             error: function(xhr, status, error) {
+
+                if(xhr.responseJSON && xhr.responseJSON.errors){
+                    $('.invalid-feedback').text('').hide();
+                    $.each(xhr.responseJSON.errors, function(key, value){
+                        var $element = $('[name="' + key + '"]');
+                        var $invalidFeedback = $element.siblings('.invalid-feedback');
+                        $invalidFeedback.text(value);
+                        $invalidFeedback.show();
+
+
+                    });
+                    loaderControl(0)
+                    contentControl(1)
+                }
                 // var err = eval( xhr.responseText );
                 // alert(err);
                 console.log(xhr);

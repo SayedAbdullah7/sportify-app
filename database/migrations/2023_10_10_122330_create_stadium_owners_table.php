@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('stadium_owners', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('email')->nullable();
             $table->string('phone',25);
 //            $table->string('otp');
             $table->timestamps();

@@ -21,9 +21,18 @@ class StadiumOwnerRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'phone' => 'required|unique:stadium_owners|max:25',
+        $rules = [
             'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
         ];
+
+        // Check if the 'phone' field exists in the request (for updates) and add the 'ignore' rule if needed.
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            $rules['phone'] = 'required|max:25'; // Allow the same phone number during an update.
+        } else {
+            $rules['phone'] = 'required|unique:stadium_owners|max:25'; // Enforce uniqueness for new records.
+        }
+
+        return $rules;
     }
 }

@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\DataTables\AdminsDataTable;
 use App\DataTables\StadiumOwnerDataTable;
 use App\Http\Requests\StadiumOwnerRequest;
+use App\Models\Sport;
+use App\Models\Stadium;
 use App\Models\StadiumOwner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class StadiumOwnerController extends Controller
 {
@@ -29,7 +32,7 @@ class StadiumOwnerController extends Controller
     public function uploadImage(Request $request)
     {
         $file = $request->file('image');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $filename = Str::random(10) . '_' . time() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('uploads'), $filename);
 
         return response()->json(['filename' => $filename]);
@@ -39,7 +42,41 @@ class StadiumOwnerController extends Controller
      */
     public function store(StadiumOwnerRequest $request)
     {
-        StadiumOwner::create($request->all());
+        $stadiumOwner = new StadiumOwner();
+        $stadiumOwner->name = $request->name;
+        $stadiumOwner->phone = $request->phone;
+        $stadiumOwner->email = $request->email;
+        $stadiumOwner->save();
+
+
+        // Create a new Stadium
+        $stadium = new Stadium();
+        $stadium->stadium_type_id = $request->stadia_type_id;
+        $stadium->location_link = $request->location_link;
+//        $stadium->email = $request->email;
+        $stadium->longitude = $request->longitude;
+        $stadium->latitude = $request->latitude;
+        $stadium->name = $request->stadium_name;
+        $stadium->stadium_owner_id =  $stadiumOwner->id;
+        $stadium->save();
+        if ($request->image){
+            foreach ($request->image as $image){
+                $pathToMedia = public_path('uploads/'.$image);
+                $media = $stadium->addMedia($pathToMedia)->toMediaCollection();
+                $media->save();
+            }
+        }
+
+
+
+        if ($request->sports) {
+
+            foreach ($request->sports as $sport) {
+                $stadium->sports()->attach($sport);
+            }
+        }
+
+
         return response()->json(['status'=>true,'msg'=>'successfully created']);
     }
 
@@ -56,15 +93,47 @@ class StadiumOwnerController extends Controller
      */
     public function edit(StadiumOwner $stadiumOwner)
     {
+        $stadiumOwner->load(['stadium.sports']);
+//        return $stadiumOwner->stadium->getMedia();
         return view('pages.stadium_owner.form',['model'=>$stadiumOwner,'action'=>route('stadium-owner.update',$stadiumOwner->id)]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, StadiumOwner $stadiumOwner)
+    public function update(StadiumOwnerRequest $request, StadiumOwner $stadiumOwner)
     {
-        $stadiumOwner->update($request->all());
+//        $stadiumOwner->update($request->all());
+//        $stadiumOwner = new StadiumOwner();
+        $stadiumOwner->name = $request->name;
+        $stadiumOwner->phone = $request->phone;
+        $stadiumOwner->email = $request->email;
+        $stadiumOwner->save();
+
+
+        // Create a new Stadium
+        $stadium = $stadiumOwner->stadium;
+        $stadium->stadium_type_id = $request->stadia_type_id;
+        $stadium->location_link = $request->location_link;
+        $stadium->longitude = $request->longitude;
+        $stadium->latitude = $request->latitude;
+        $stadium->name = $request->stadium_name;
+        $stadium->stadium_owner_id =  $stadiumOwner->id;
+        $stadium->save();
+
+        if ($request->image) {
+            foreach ($request->image as $image) {
+                $pathToMedia = public_path('uploads/' . $image);
+                $media = $stadium->addMedia($pathToMedia)->toMediaCollection();
+                $media->save();
+            }
+        }
+
+
+
+//        foreach ($request->sports as $sport) {
+            $stadium->sports()->sync($request->sports);
+//        }
         return response()->json(['status'=>true,'msg'=>'successfully updated']);
     }
 
