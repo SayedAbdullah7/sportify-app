@@ -15,7 +15,7 @@
     <x-forms.email-input label="email" name="email" value="{{isset($model)?$model->email:''}}"></x-forms.email-input>
 
     <x-forms.text-input label="stadium name" name="stadium_name" value="{{isset($model)?$model->stadium->name:''}}"></x-forms.text-input>
-    <x-forms.text-input label="location_link" name="location_link" value="{{isset($model)?$model->stadium->location_link:''}}"></x-forms.text-input>
+    <x-forms.text-input label="location link" name="location_link" value="{{isset($model)?$model->stadium->location_link:''}}"></x-forms.text-input>
     <x-forms.text-input label="longitude" name="longitude" value="{{isset($model)?$model->stadium->longitude:''}}"></x-forms.text-input>
     <x-forms.text-input label="latitude" name="latitude" value="{{isset($model)?$model->stadium->latitude:''}}"></x-forms.text-input>
 

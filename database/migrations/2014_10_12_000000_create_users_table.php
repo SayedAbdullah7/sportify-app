@@ -19,8 +19,11 @@ return new class extends Migration
             $table->boolean('gender');
             $table->date('day_of_birth');
             $table->string('email')->unique()->nullable();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->tinyInteger('height')->unsigned()->nullable();// max value 255
+            $table->string('address')->nullable();
+            $table->text('about_me')->nullable();
 
+            $table->timestamp('email_verified_at')->nullable();
 //            $table->string('password');
             $table->rememberToken();
             $table->timestamps();

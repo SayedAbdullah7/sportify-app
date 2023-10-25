@@ -23,7 +23,7 @@ class StadiumOwnerRequest extends FormRequest
     {
         $rules = [
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'email|max:255',
         ];
 
         // Check if the 'phone' field exists in the request (for updates) and add the 'ignore' rule if needed.

@@ -64,8 +64,14 @@ Route::get('/test', function () {
 
     return $guards;
 
-        $model = StadiumOwner::first();
-    $array = new StadiumOwnerResource($model);
-    return dd($array);
 });
 require __DIR__.'/auth.php';
+
+Route::get('/clear-cache', function () {
+    return \Artisan::call('cache:clear');
+    return 'clear';
+});
+
+Route::get('storage-link', function (){
+    return \Illuminate\Support\Facades\Artisan::call('storage:link');
+});

@@ -149,7 +149,7 @@ class UserController extends BaseController
             'name' => 'required|string|regex:/(^[A-Za-z0-9 ]+$)+/|max:255',
             'username' => 'nullable|string|unique:users|max:255',
             'gender' => 'required|boolean',
-            'day_of_birth' => 'required|date',
+            'day_of_birth' => 'required|date|before_or_equal:' . \Carbon\Carbon::now()->subYears(16)->format('Y-m-d') . '|after_or_equal:' . \Carbon\Carbon::now()->subYears(80)->format('Y-m-d'),
             'email' => 'email|unique:users|max:255',
             'phone' => 'required|unique:users|max:25',
         ]);
@@ -166,7 +166,6 @@ class UserController extends BaseController
         $user->day_of_birth = $request->day_of_birth;
         $user->email = $request->email;
         $user->phone = $request->phone;
-        // $user->password = bcrypt($request->password); //
         $user->save();
 
 
