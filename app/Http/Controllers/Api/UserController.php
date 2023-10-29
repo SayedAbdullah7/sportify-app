@@ -97,13 +97,11 @@ class UserController extends BaseController
 
         if($user) {  //login
             // Delete all the old OTPs for this stadiumOwner
-//            $user->verificationCodes()->delete();
+            $user->verificationCodes()->delete();
 
             $token = $user->createToken('app-token')->plainTextToken;
             $user->load(['teams.teamUsers.position','teams.sport','friends','sports']);
-//            $user->load('teams.teamUsers');
             $response = [
-//                'user'=>$user->load('teams.teamUsers'),
                 'user'=>new UserResource($user),
                 'token'=>$token
             ];
@@ -176,6 +174,7 @@ class UserController extends BaseController
         VerificationCode::where('phone',$verificationCode->phone)->delete();
 
         $token = $user->createToken('app-token')->plainTextToken;
+        $user->load(['teams.teamUsers.position','teams.sport','friends','sports']);
         $response = [
             'user'=>new UserResource($user),
             'token'=>$token
