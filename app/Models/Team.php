@@ -8,4 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Team extends Model
 {
     use HasFactory;
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withPivot('position_id','is_cap');
+//        return $this->belongsToMany(User::class,'team_user','user_id', 'team_id');
+
+    }
+    public function sport()
+    {
+        return $this->belongsTo(Sport::class);
+    }
+
+    public function teamUsers()
+    {
+        return $this->hasMany(TeamUser::class);
+    }
+
 }

@@ -13,6 +13,7 @@
         "laravelcollective/html": "^6.4",
         "opcodesio/log-viewer": "^3.1",
         "spatie/laravel-medialibrary": "^10.0.0",
+        "staudenmeir/laravel-merged-relations": "^1.6",
         "yajra/laravel-datatables": "^10.0"
     },
     "require-dev": {

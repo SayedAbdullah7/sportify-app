@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Resources\StadiumOwnerResource;
 use App\Models\StadiumOwner;
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,6 +50,30 @@ Route::middleware('auth')->group(function () {
 
 });
 Route::get('/test', function () {
+    return !strpos("I love php, I love php too!","pshp");
+    $a='foo';
+    function foo(){echo 'hey';}
+    return $a();
+    $users = User::all();
+     $sports = \App\Models\Sport::with(['positions'])->get();
+//    Team::factory()
+//        ->count(40)
+//        ->create();
+    $teams = Team::with('sport.positions')->get();
+//    $team = Team::first();
+    foreach ($teams as $team) {
+        foreach ($team->sport->positions as $position){
+//            return $position;
+            $team->users()->attach($users->first(),['position_id'=>$position->id]);
+        }
+        return $team->load('users');
+//            $sport = Sport::create(['name' => Str::lower($sportName)]);
+//            $sport->positions()->createMany(array_map(function ($position) {
+//                return ['name' => Str::lower($position)];
+//            }, $positions));
+    }
+
+
 
     $guards =[];
     if(\Illuminate\Support\Facades\Auth::guard('admin')->check()){
@@ -68,8 +94,7 @@ Route::get('/test', function () {
 require __DIR__.'/auth.php';
 
 Route::get('/clear-cache', function () {
-    return \Artisan::call('cache:clear');
-    return 'clear';
+    return \Artisan::call('optimize:clear');
 });
 
 Route::get('storage-link', function (){

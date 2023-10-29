@@ -51,4 +51,58 @@ class User extends Authenticatable
     {
         return $this->morphMany(VerificationCode::class, 'verifiable');
     }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class)->withPivot('position_id');
+    }
+    public function teamUsers()
+    {
+        return $this->hasMany(TeamUser::class);
+    }
+    public function sports()
+    {
+        return $this->belongsToMany(Sport::class);
+    }
+    public function friendsTo(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+            ->withPivot('accepted')
+            ->withTimestamps();
+    }
+
+    public function friendsFrom(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
+            ->withPivot('accepted')
+            ->withTimestamps();
+    }
+
+    public function pendingFriendsTo(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->friendsTo()->wherePivot('accepted', false);
+    }
+
+    public function pendingFriendsFrom(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->friendsFrom()->wherePivot('accepted', false);
+    }
+
+    public function acceptedFriendsTo(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->friendsTo()->wherePivot('accepted', true);
+    }
+
+    public function acceptedFriendsFrom(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->friendsFrom()->wherePivot('accepted', true);
+    }
+
+
+    public function friends(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+            ->withPivot('accepted')
+            ->withTimestamps();
+    }
 }

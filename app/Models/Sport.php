@@ -12,4 +12,17 @@ class Sport extends Model
     {
         return $this->belongsToMany(Stadium::class);
     }
+
+    public function positions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Position::class);
+    }
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
+    public function teams()
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

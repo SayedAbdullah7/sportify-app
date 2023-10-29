@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('team_user', function (Blueprint $table) {
             $table->id();
-            $table->boolean('is_captain')->default(0);
+            $table->boolean('is_cap')->default(0);
             $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Team::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\Position::class)->constrained()->restrictOnDelete();
             $table->timestamps();
         });
