@@ -8,21 +8,29 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\HasMedia;
+use Staudenmeir\LaravelMergedRelations\Eloquent\HasMergedRelationships;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
     use HasApiTokens, HasFactory, Notifiable;
+    use InteractsWithMedia;
+    use HasMergedRelationships;
+
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-//        'password',
-    ];
+//    protected $fillable = [
+//        'name',
+//        'email',
+////        'password',
+//    ];
+    protected $guarded = [];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -99,10 +107,16 @@ class User extends Authenticatable
     }
 
 
-    public function friends(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+//    public function friends(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+//    {
+//        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+//            ->withPivot('accepted')
+//            ->withTimestamps();
+//    }
+    public function friends(): \Staudenmeir\LaravelMergedRelations\Eloquent\Relations\MergedRelation
     {
-        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
-            ->withPivot('accepted')
-            ->withTimestamps();
+        return $this->mergedRelationWithModel(__CLASS__, 'friends_view');
+
     }
+
 }

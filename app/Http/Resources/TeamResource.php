@@ -17,10 +17,13 @@ class TeamResource extends JsonResource
 //        return parent::toArray($request);
         return [
                 'id' => $this->id,
+                'image' => $this->image,
                 'name' => $this->name,
                 'sport'=> new SportResource($this->whenLoaded('sport')),
                 'user'=> UserResource::collection($this->whenLoaded('user')),
+                'captain'=> new TeamUserResource($this->whenLoaded('captain')),
                 'team_users'=> TeamUserResource::collection($this->whenLoaded('teamUsers')),
+
         ];
     }
 }

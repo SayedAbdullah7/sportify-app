@@ -16,9 +16,11 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $image = $this->getFirstMedia('profile');
+//        $image = asset('/storage/'.$image->id.'/'.$image->file_name);
         return [
             'id' => $this->id,
-            'image' => $this->image,
+            'image' => !empty($image)?asset('/storage/'.$image->id.'/'.$image->file_name):null,
             'point' => (int)$this->point,
             'name' => $this->name,
             'username' => $this->username,

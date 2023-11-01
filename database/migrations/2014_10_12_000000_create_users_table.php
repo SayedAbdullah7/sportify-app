@@ -21,8 +21,9 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->tinyInteger('height')->unsigned()->nullable();// max value 255
             $table->string('address')->nullable();
-            $table->text('about_me')->nullable();
-
+            $table->text('about')->nullable();
+            $table->string('longitude')->nullable();
+            $table->string('latitude')->nullable();
             $table->timestamp('email_verified_at')->nullable();
 //            $table->string('password');
             $table->rememberToken();

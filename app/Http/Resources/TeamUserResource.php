@@ -20,7 +20,7 @@ class TeamUserResource extends JsonResource
             'id' => $this->id,
             'is_cap' => $this->is_cap,
             'position'=> new PositionResource($this->whenLoaded('position')),
-            'user'=> UserResource::collection($this->whenLoaded('user')),
+            'user'=> new UserResource($this->whenLoaded('user')),
         ];
     }
 }

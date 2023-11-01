@@ -9,12 +9,19 @@ use App\Http\Resources\StadiumOwnerResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationCode;
+use App\Services\OtpService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends BaseController
 {
+    protected $otpService;
+
+    public function __construct(OtpService $otpService)
+    {
+        $this->otpService = $otpService;
+    }
     public function index()
     {
 
@@ -40,7 +47,7 @@ class UserController extends BaseController
         }
         if ($verificationCodes->count() >= 3 && $now->subHour()->isBefore($verificationCodes->last()->created_at)){
 //            return $this->handleError('blocked');
-            return $this->handleError('blocked');
+//            return $this->handleError('blocked');
         }
 
         // Generate OTP with gateway
@@ -97,10 +104,10 @@ class UserController extends BaseController
 
         if($user) {  //login
             // Delete all the old OTPs for this stadiumOwner
-            $user->verificationCodes()->delete();
+//            $user->verificationCodes()->delete();
 
             $token = $user->createToken('app-token')->plainTextToken;
-            $user->load(['teams.teamUsers.position','teams.sport','friends','sports']);
+            $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','sports','teams.captain.user']);
             $response = [
                 'user'=>new UserResource($user),
                 'token'=>$token
@@ -193,15 +200,82 @@ class UserController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+//        return $request->all();
+//        if ($request->hasFile('image')) {
+//            return $this->handleResponse('successfully');
+//        }
+        $user = $request->user();
+        $validateUser = Validator::make($request->all(),[
+            'name' => 'required|string|max:255',
+            'gender' => 'boolean',
+            'day_of_birth' => 'date',
+            'email' => 'unique:users,email,' . $user->id . '|nullable|email',
+            'phone' => 'unique:users,phone,' . $user->id . '|nullable|max:25',
+            'height' => 'required|integer|max:255',
+            'address' => 'required|string',
+            'about' => 'required|string',
+            'longitude' => 'required|string|max:255',
+            'latitude' => 'required|string|max:255',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:5120', // Adjust max file size as needed
+        ]);
+        if($validateUser->fails()){
+            return $this->handleError('validation error',$validateUser->errors()->toArray());
+        }
+
+//        $user->update($validateUser->validate());
+        $user->name = $request->name;
+        $user->gender = $request->gender;
+        $user->email = $request->email;
+        $user->day_of_birth = $request->day_of_birth;
+        $user->height = $request->height;
+        $user->address = $request->address;
+        $user->about = $request->about;
+        $user->longitude = $request->longitude;
+        $user->latitude = $request->latitude;
+
+        if($request->phone && $user->phone != $request->phone){
+            // Check parameters
+            if(!$request->device_token){
+                return $this->handleError('invalid parameter');
+            }
+            // check phone verify
+            $verificationCode = VerificationCode::
+            where('verifiable_id', null)->
+            where('verifiable_type', User::class)->
+            where('phone',$request->phone)->
+            where('device_token',$request->device_token)->
+            where('verified_at','!=', null)->
+            latest()->first();
+
+            if(!$verificationCode){
+                return $this->handleError('phone not verified');
+            }
+            $user->phone = $request->phone;
+        }
+
+
+        $user->save();
+
+
+        if ($request->hasFile('image')) {
+            $user->clearMediaCollection('profile');
+            $user->addMediaFromRequest('image')->toMediaCollection('profile');
+        }
+        return $this->handleResponse('updated successfully',new UserResource($user));
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
+    {
+        //
+    }
+
+    public function sendAddFriend(string $id)
     {
         //
     }

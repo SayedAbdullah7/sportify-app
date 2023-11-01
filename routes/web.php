@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
 
 });
 Route::get('/test', function () {
+    $user = 1;
+    return User::find($user);
     return !strpos("I love php, I love php too!","pshp");
     $a='foo';
     function foo(){echo 'hey';}

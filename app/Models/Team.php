@@ -25,4 +25,10 @@ class Team extends Model
         return $this->hasMany(TeamUser::class);
     }
 
+
+    public function captain()
+    {
+        return $this->hasOne(TeamUser::class)->where('is_cap',1);
+    }
+
 }

@@ -68,14 +68,12 @@ class StadiumOwnerController extends Controller
         }
 
 
-
         if ($request->sports) {
 
             foreach ($request->sports as $sport) {
                 $stadium->sports()->attach($sport);
             }
         }
-
 
         return response()->json(['status'=>true,'msg'=>'successfully created']);
     }
