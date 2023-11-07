@@ -3,35 +3,79 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AnotherUserResource;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class FriendController extends Controller
+class FriendController extends BaseController
 {
+
+    public function index(Request $request){
+        $user = $request->user();
+        return $this->handleResponse('',UserResource::collection($user->friends));
+    }
+
+    public function getPendingRequests(Request $request){
+        $user = $request->user();
+        $sentRequests = $user->pendingFriendsTo()->get();
+        return $this->handleResponse('',UserResource::collection($sentRequests));
+    }
+
+    public function getSentRequests(Request $request){
+        $user = $request->user();
+        $sentRequests = $user->pendingFriendsFrom()->get();
+        return $this->handleResponse('',UserResource::collection($sentRequests));
+    }
+
     public function send(Request $request)
     {
+
         $user = $request->user();
         $friend_id = $request->friend_id;
         $friend = User::find($friend_id);
 
         if (!$user || !$friend) {
-            return response()->json(['message' => 'Invalid user or friend'], 404);
+            return $this->handleError('user not found');
         }
+
 
         // Check if the users are already friends
         if ($user->friendsTo->contains($friend)) {
-            return response()->json(['message' => 'You are already friends with this user'], 400);
+            return $this->handleError('You are already friends with this user');
         }
 
         // Check if a pending friend request has already been sent
         if ($user->pendingFriendsTo->contains($friend)) {
-            return response()->json(['message' => 'You have already sent a friend request to this user'], 400);
+            return $this->handleError('You have already sent a friend request to this user');
         }
 //        return $user->friends;
-//        $r = $user->friendsTo()->attach($friend_id, ['accepted' => false]);
+        $r = $user->friendsTo()->attach($friend_id);
 
-        return response()->json(['data'=>$user->pendingFriendsTo]);
+        return $this->handleResponse('request sent successfully',new UserResource($user->load('friends','pendingFriendsTo','pendingFriendsFrom')));
+    }
+    public function accept(Request $request)
+    {
+        $user = $request->user();
+        $friend_id = $request->friend_id;
+        $friend = User::find($friend_id);
+
+        if (!$friend) {
+            return $this->handleError('user not found');
+        }
+        if (!$user->isPendingFriendsFrom($friend->id)) {
+            return $this->handleError('request not found');
+        }
+
+        $user->friendsFrom()->updateExistingPivot($friend->id, ['accepted' => true]);
+
+        return $this->handleResponse('accepted successfully',new UserResource($user->load('friends','pendingFriendsTo','pendingFriendsFrom')));
 
 
+    }
+
+    public function available(Request $request){
+        $users = User::where('id','!=',$request->user()->id)->get();
+        return $this->handleResponse('updated successfully',AnotherUserResource::collection($users));
     }
 }

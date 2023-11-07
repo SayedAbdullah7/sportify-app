@@ -106,6 +106,20 @@ class User extends Authenticatable implements HasMedia
         return $this->friendsFrom()->wherePivot('accepted', true);
     }
 
+    public function isFriend($user_id): bool
+    {
+        return $this->friends()->where('id',$user_id)->exists();
+    }
+    public function isPendingFriendsTo($user_id) : bool
+    {
+        return $this->pendingFriendsTo()->where('users.id',$user_id)->exists();
+    }
+    public function isPendingFriendsFrom($user_id): bool
+    {
+        return  $this->pendingFriendsFrom()->where('users.id',$user_id)->exists();
+    }
+
+
 
 //    public function friends(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
 //    {

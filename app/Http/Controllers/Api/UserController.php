@@ -124,12 +124,11 @@ class UserController extends BaseController
             $response = [];
         }
 
-
-
         return $this->handleResponse('verified successfully',$response);
     }
 
     /**
+
      * Store a newly created resource in storage.
      */
     public function register(Request $request)
@@ -192,9 +191,12 @@ class UserController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
-        //
+//        return $this->handleResponse('',[]);
+//        return '';
+        $user = $request->user()->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','sports','teams.captain.user','friends']);
+        return $this->handleResponse('',['user'=>new UserResource($user)]);
     }
 
     /**
@@ -212,12 +214,12 @@ class UserController extends BaseController
             'gender' => 'boolean',
             'day_of_birth' => 'date',
             'email' => 'unique:users,email,' . $user->id . '|nullable|email',
-            'phone' => 'unique:users,phone,' . $user->id . '|nullable|max:25',
-            'height' => 'required|integer|max:255',
-            'address' => 'required|string',
-            'about' => 'required|string',
-            'longitude' => 'required|string|max:255',
-            'latitude' => 'required|string|max:255',
+//            'phone' => 'unique:users,phone,' . $user->id . '|nullable|max:25',
+            'height' => 'nullable|integer|max:255',
+            'address' => 'nullable|string',
+            'about' => 'nullable|string',
+            'longitude' => 'nullable|string|max:255',
+            'latitude' => 'nullable|string|max:255',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:5120', // Adjust max file size as needed
         ]);
         if($validateUser->fails()){
@@ -235,25 +237,25 @@ class UserController extends BaseController
         $user->longitude = $request->longitude;
         $user->latitude = $request->latitude;
 
-        if($request->phone && $user->phone != $request->phone){
-            // Check parameters
-            if(!$request->device_token){
-                return $this->handleError('invalid parameter');
-            }
-            // check phone verify
-            $verificationCode = VerificationCode::
-            where('verifiable_id', null)->
-            where('verifiable_type', User::class)->
-            where('phone',$request->phone)->
-            where('device_token',$request->device_token)->
-            where('verified_at','!=', null)->
-            latest()->first();
-
-            if(!$verificationCode){
-                return $this->handleError('phone not verified');
-            }
-            $user->phone = $request->phone;
-        }
+//        if($request->phone && $user->phone != $request->phone){
+//            // Check parameters
+//            if(!$request->device_token){
+//                return $this->handleError('invalid parameter');
+//            }
+//            // check phone verify
+//            $verificationCode = VerificationCode::
+//            where('verifiable_id', null)->
+//            where('verifiable_type', User::class)->
+//            where('phone',$request->phone)->
+//            where('device_token',$request->device_token)->
+//            where('verified_at','!=', null)->
+//            latest()->first();
+//
+//            if(!$verificationCode){
+//                return $this->handleError('phone not verified');
+//            }
+//            $user->phone = $request->phone;
+//        }
 
 
         $user->save();
@@ -262,6 +264,8 @@ class UserController extends BaseController
         if ($request->hasFile('image')) {
             $user->clearMediaCollection('profile');
             $user->addMediaFromRequest('image')->toMediaCollection('profile');
+        }elseif($request->deleteImage){
+            $user->clearMediaCollection('profile');
         }
         return $this->handleResponse('updated successfully',new UserResource($user));
 

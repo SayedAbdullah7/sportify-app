@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/upload-image', [\App\Http\Controllers\StadiumOwnerController::class,'uploadImage'])->name('upload-image');
 
 });
+Route::get('/update/database', [\App\Http\Controllers\UpdateController::class, 'database']);
 Route::get('/test', function () {
     $user = 1;
     return User::find($user);

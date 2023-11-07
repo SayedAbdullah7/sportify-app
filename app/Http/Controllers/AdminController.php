@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\AdminsDataTable;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -47,7 +48,7 @@ class AdminController extends Controller
      */
     public function edit(Admin $admin)
     {
-        return view('pages.admin.form',$admin);
+        return view('pages.admin.form',['model'=>$admin,'action'=>route('admin.update',$admin->id)]);
     }
 
     /**
@@ -55,7 +56,18 @@ class AdminController extends Controller
      */
     public function update(Request $request, Admin $admin)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|unique:users,username,'.$admin->id,
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $admin->name =$request->name;
+        $admin->username =$request->username;
+        $admin->password = Hash::make($request->password);
+        $admin->save();
+
+        return response()->json(['status'=>true,'msg'=>'successfully updated']);
     }
 
     /**

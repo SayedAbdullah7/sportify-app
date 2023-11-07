@@ -31,9 +31,24 @@ Route::middleware([])->group(function () {
         Route::post('/register', [\App\Http\Controllers\Api\UserController::class,'register']);
 
         Route::middleware(['auth:sanctum'])->group(function () {
+            Route::get('/show', [\App\Http\Controllers\Api\UserController::class,'show']);
             Route::post('/update', [\App\Http\Controllers\Api\UserController::class,'update']);
-            Route::post('/send', [\App\Http\Controllers\Api\FriendController::class,'send']);
+
         });
+    });
+
+    Route::middleware(['auth:sanctum'])->group(function () {
+            Route::prefix('friend')->group(function () {
+                Route::get('/', [\App\Http\Controllers\Api\FriendController::class,'index']);
+                Route::post('/send', [\App\Http\Controllers\Api\FriendController::class,'send']);
+                Route::get('/available', [\App\Http\Controllers\Api\FriendController::class,'available']);
+                Route::post('/accept', [\App\Http\Controllers\Api\FriendController::class,'accept']);
+
+                Route::get('/sentRequests', [\App\Http\Controllers\Api\FriendController::class,'getSentRequests']);
+                Route::get('/pendingRequests', [\App\Http\Controllers\Api\FriendController::class,'getPendingRequests']);
+
+            });
+
     });
 
 });

@@ -29,7 +29,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        ////        save
+//      $service = new service()->login($id)
+//        $service->status? true false
+//       $response = $service->store($user)
+//      $response['status']? true : 'false;
+
+
     }
 
     /**
