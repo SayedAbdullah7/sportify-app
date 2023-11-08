@@ -36,8 +36,8 @@ class AnotherUserResource extends JsonResource
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
             'is_friend' => $is_friend = $this->isFriend($user_id),
-            'is_pending_friends_to' => $is_pending_friends_to = !$is_friend?$this->isPendingFriendsTo($user_id):false,
-            'is_pending_friends_from' => !$is_pending_friends_to? $this->isPendingFriendsFrom($user_id):false,
+            'is_pending_friends_from' => $is_pending_friends_to = !$is_friend?$this->isPendingFriendsTo($user_id):false,
+            'is_pending_friends_to' => !$is_pending_friends_to? $this->isPendingFriendsFrom($user_id):false,
 
 //            'is_friend' => request()->user(),
 //            'is_friend' => $this->isFriend(request()->user()),
