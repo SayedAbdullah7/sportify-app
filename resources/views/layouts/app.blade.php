@@ -76,9 +76,12 @@
 </div>
 <!--end wrapper-->
 @include('include.switcher')
+
 <!-- Bootstrap JS -->
 <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
 <!--plugins-->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script src="{{asset('assets/js/jquery.min.js')}}"></script>
 <script src="{{asset('assets/plugins/simplebar/js/simplebar.min.js')}}"></script>
 <script src="{{asset('assets/plugins/metismenu/js/metisMenu.min.js')}}"></script>
@@ -88,6 +91,13 @@
 <script src="{{asset('assets/plugins/notifications/js/lobibox.min.js')}}"></script>
 <script src="{{asset('assets/plugins/notifications/js/notifications.min.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+</script>
 <!--app JS-->
     <script src="{{asset('assets/js/app.js')}}"></script>
 {{--    @vite(['resources/js/app.js'])--}}

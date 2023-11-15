@@ -30,7 +30,7 @@ class SportsController extends Controller
      */
     public function store(StoreSportsRequest $request)
     {
-        //
+
     }
 
     /**

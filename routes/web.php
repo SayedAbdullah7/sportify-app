@@ -45,12 +45,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('stadium-owner', \App\Http\Controllers\StadiumOwnerController::class);
     Route::resource('sport', \App\Http\Controllers\SportsController::class);
     Route::resource('stadium-type', \App\Http\Controllers\StadiumTypeController::class);
+    Route::resource('facility', \App\Http\Controllers\FacilityController::class);
 
     Route::post('/upload-image', [\App\Http\Controllers\StadiumOwnerController::class,'uploadImage'])->name('upload-image');
 
 });
 Route::get('/update/database', [\App\Http\Controllers\UpdateController::class, 'database']);
 Route::get('/test', function () {
+//    $facility4 = '100';
+//    return "$facili";
     $user = 1;
     return User::find($user);
     return !strpos("I love php, I love php too!","pshp");

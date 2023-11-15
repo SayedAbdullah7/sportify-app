@@ -14,10 +14,11 @@ class TeamResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-//        return parent::toArray($request);
+        $image = $this->getFirstMedia('team_image');
+
         return [
                 'id' => $this->id,
-                'image' => $this->image,
+                'image' => !empty($image)?asset('/storage/'.$image->id.'/'.$image->file_name):null,
                 'name' => $this->name,
                 'sport'=> new SportResource($this->whenLoaded('sport')),
                 'user'=> UserResource::collection($this->whenLoaded('user')),

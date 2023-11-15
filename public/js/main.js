@@ -43,7 +43,41 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+    $(document).on('click', '.delete_btn', function () {
+        var url = $(this).data('action');
 
+        Swal.fire({
+            text: "Are you sure you want to delete it",
+            icon: "warning",
+            buttonsStyling: true,
+            showCancelButton: true,
+            confirmButtonText: "confirm!",
+            customClass: {
+                // confirmButton: "btn-danger",
+                // cancelButton: "btn btn-danger"
+            }
+        }).then(function (result) {
+            console.log('result')
+            // $('#areas-table').DataTable().ajax.reload();
+
+            if (result.isConfirmed) {
+                console.log(url)
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    success: function (data) {
+                        console.log(data)
+                        info_noti(data.msg,data.status?'success':'danger')
+                        $('#table').DataTable().ajax.reload();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+        });
+
+    });
     $(document).on('submit', '#form', function (event) {
         event.preventDefault();
         loaderControl(1)

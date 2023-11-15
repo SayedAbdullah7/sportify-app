@@ -63,6 +63,13 @@
                 <div class="menu-title">Users</div>
             </a>
         </li>
+        <li>
+            <a href="{{asset(route('facility.index'))}}">
+                <div class="parent-icon"><i class='bx bx-cookie'></i>
+                </div>
+                <div class="menu-title">facilities</div>
+            </a>
+        </li>
         <li class="menu-label">Charts & Maps</li>
         <li>
             <a class="has-arrow" href="javascript:;">

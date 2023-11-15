@@ -23,6 +23,7 @@
         <x-forms.select label="stadium type" name="stadia_type_id"
                     :options="\App\Models\StadiumType::pluck('id','name')->toArray()"
                     old="{{isset($model)?$model->stadium->stadium_type_id:''}}"></x-forms.select>
+
     <x-forms.multi-select label="sports" name="sports[]" :options="\App\Models\Sport::pluck('name','id')->toArray()"
                           :old="isset($model)?$model->stadium->sports->pluck('id')->toArray():[]">
     </x-forms.multi-select>

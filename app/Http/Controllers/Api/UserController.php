@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\DataTables\AdminsDataTable;
 use App\DataTables\UserDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AnotherUserResource;
 use App\Http\Resources\StadiumOwnerResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -108,9 +109,11 @@ class UserController extends BaseController
 
             $token = $user->createToken('app-token')->plainTextToken;
             $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','sports','teams.captain.user']);
+
             $response = [
                 'user'=>new UserResource($user),
-                'token'=>$token
+                'token'=>$token,
+                'friends_count'=>$user->friends()->count()
             ];
 
         }else{      //register
@@ -183,7 +186,8 @@ class UserController extends BaseController
         $user->load(['teams.teamUsers.position','teams.sport','friends','sports']);
         $response = [
             'user'=>new UserResource($user),
-            'token'=>$token
+            'token'=>$token,
+            'friends_count'=>0
         ];
         return $this->handleResponse('successfully logged in',$response);
     }
@@ -195,8 +199,19 @@ class UserController extends BaseController
     {
 //        return $this->handleResponse('',[]);
 //        return '';
-        $user = $request->user()->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','sports','teams.captain.user','friends']);
-        return $this->handleResponse('',['user'=>new UserResource($user)]);
+        if ($request->user_id){
+            $user = User::find($request->user_id);
+            $user->load('sports','teams','teams.sport');
+
+            if(!$user){
+                return $this->handleError('user not found');
+            }
+            return $this->handleResponse('',['user'=>new AnotherUserResource($user)]);
+        }else{
+            $user = $request->user()->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','sports','teams.captain.user','friends']);
+            return $this->handleResponse('',['user'=>new UserResource($user),'friends_count'=>$user->friends()->count()]);
+        }
+
     }
 
     /**

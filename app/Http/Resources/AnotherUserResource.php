@@ -18,7 +18,7 @@ class AnotherUserResource extends JsonResource
 //        return parent::toArray($request);
         $image = $this->getFirstMedia('profile');
 //        $image = asset('/storage/'.$image->id.'/'.$image->file_name);
-        $user_id = auth()->user()->id;
+        $user_id = auth()->user()->id??false;
         return [
             'id' => $this->id,
             'image' => !empty($image)?asset('/storage/'.$image->id.'/'.$image->file_name):null,
@@ -35,7 +35,7 @@ class AnotherUserResource extends JsonResource
             'about' => $this->about,
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
-            'is_friend' => $is_friend = $this->isFriend($user_id),
+            'is_friend' => $is_friend = $user_id? $this->isFriend($user_id):false,
             'is_pending_friends_from' => $is_pending_friends_to = !$is_friend?$this->isPendingFriendsTo($user_id):false,
             'is_pending_friends_to' => !$is_pending_friends_to? $this->isPendingFriendsFrom($user_id):false,
 
@@ -47,5 +47,6 @@ class AnotherUserResource extends JsonResource
             'team_users'=> TeamUserResource::collection($this->whenLoaded('teamUsers')),
             'sports'=> SportResource::collection($this->whenLoaded('sports')),
         ];
+
     }
 }

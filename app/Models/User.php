@@ -64,6 +64,11 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsToMany(Team::class)->withPivot('position_id');
     }
+
+    public function teamsMade(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Team::class);
+    }
     public function teamUsers()
     {
         return $this->hasMany(TeamUser::class);
@@ -72,16 +77,20 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsToMany(Sport::class);
     }
+    public function positions()
+    {
+        return $this->belongsToMany(Position::class);
+    }
     public function friendsTo(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+        return $this->belongsToMany(__CLASS__, 'friends', 'user_id', 'friend_id')
             ->withPivot('accepted')
             ->withTimestamps();
     }
 
     public function friendsFrom(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
+        return $this->belongsToMany(__CLASS__, 'friends', 'friend_id', 'user_id')
             ->withPivot('accepted')
             ->withTimestamps();
     }

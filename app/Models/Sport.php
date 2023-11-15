@@ -23,6 +23,6 @@ class Sport extends Model
     }
     public function teams()
     {
-        return $this->belongsTo(Team::class);
+        return $this->hasMany(Team::class);
     }
 }

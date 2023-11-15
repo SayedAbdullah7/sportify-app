@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreFacilitieRequest;
-use App\Http\Requests\UpdateFacilitieRequest;
-use App\Models\Facilitie;
+use App\Models\GameMatch;
+use Illuminate\Http\Request;
 
-class FacilitieController extends Controller
+class GameMatchController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +26,7 @@ class FacilitieController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFacilitieRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -35,7 +34,7 @@ class FacilitieController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Facilitie $facilitie)
+    public function show(GameMatch $gameMatch)
     {
         //
     }
@@ -43,7 +42,7 @@ class FacilitieController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Facilitie $facilitie)
+    public function edit(GameMatch $gameMatch)
     {
         //
     }
@@ -51,7 +50,7 @@ class FacilitieController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFacilitieRequest $request, Facilitie $facilitie)
+    public function update(Request $request, GameMatch $gameMatch)
     {
         //
     }
@@ -59,7 +58,7 @@ class FacilitieController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Facilitie $facilitie)
+    public function destroy(GameMatch $gameMatch)
     {
         //
     }

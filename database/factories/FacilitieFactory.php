@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Facilitie>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Facility>
  */
-class FacilitieFactory extends Factory
+class FacilityFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class FacilitieFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'facilitie' + random_int(1,1000),
+            'name' => 'Facility' + random_int(1,1000),
         ];
     }
 }
