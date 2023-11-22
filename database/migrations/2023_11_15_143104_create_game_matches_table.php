@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('game_matches', function (Blueprint $table) {
             $table->id();
+            $table->dateTime('start');
+            $table->dateTime('end');
+            $table->boolean('is_completed');
+            $table->enum('statues',[]);
+
+            $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Stadium::class)->constrained()->restrictOnDelete();
             $table->timestamps();
         });
     }

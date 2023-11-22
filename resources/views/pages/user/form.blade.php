@@ -1,6 +1,6 @@
-{!! Form::open(['url' => 'foo/bar']) !!}
-<form class="row g-3">
-{{--    <x-input-text></x-input-text>--}}
+<form id="form" class="row g-3" method="POST" action="{{$action}}" data-method="{{isset($model)?'PUT':'POST'}}">
+
+    {{--    <x-input-text></x-input-text>--}}
     <x-forms.text-input label="name" name="name" value=""></x-forms.text-input>
     <div class="col-md-6">
         <label for="inputLastName2" class="form-label">Last Name</label>

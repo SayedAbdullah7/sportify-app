@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SportResource;
 use App\Http\Resources\StadiumResoure;
+use App\Models\GameMatch;
 use App\Models\Sport;
 use App\Models\Stadium;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class StadiumController extends BaseController
      */
     public function index()
     {
+
         $user = \request()->user();
         $userLongitude = $user->longitude;
         $userLatitude = $user->latitude;
@@ -51,9 +53,21 @@ class StadiumController extends BaseController
      */
     public function store(Request $request)
     {
-        $request->is_fullteam;
-        $request->team_id;
-        $request->age_category;
+//        $request->is_fullteam;
+        $start = $request->start;
+        $end = $request->end;
+        if($request->is_fullteam){
+
+        }else{
+            $request->age_category;
+            $request->sport_id;
+            $request->audience;
+            $request->special_note;
+        }
+
+        $match = GameMatch::
+
+
     }
 
     /**

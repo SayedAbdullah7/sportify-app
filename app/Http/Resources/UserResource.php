@@ -40,6 +40,7 @@ class UserResource extends JsonResource
             'team_users'=> TeamUserResource::collection($this->whenLoaded('teamUsers')),
 //            'friends'=> [],
             'sports'=> SportResource::collection($this->whenLoaded('sports')),
+            'positions'=> PositionResource::collection($this->whenLoaded('positions')),
 
 
             'friends'=> AnotherUserResource::collection($this->whenLoaded('friends')),

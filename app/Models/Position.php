@@ -13,4 +13,9 @@ class Position extends Model
     {
         return $this->belongsTo(Sport::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

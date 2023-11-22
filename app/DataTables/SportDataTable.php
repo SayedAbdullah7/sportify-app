@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Sport;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -22,7 +23,15 @@ class SportDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'sport.action')
+            ->addColumn('action', function (Sport $model) {
+                return view('pages.sport.columns._actions', ['model'=>$model,'route_name'=>'sport']);
+            })
+            ->editColumn('created_at', function($data){
+                return Carbon::parse($data->created_at)->toDateTimeString();
+            })
+            ->editColumn('updated_at', function($data){
+                return Carbon::parse($data->updated_at)->toDateTimeString();
+            })
             ->setRowId('id');
     }
 
@@ -40,20 +49,12 @@ class SportDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('sport-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+//                    ->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle();
     }
 
     /**
@@ -62,15 +63,15 @@ class SportDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
             Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+            Column::make('name'),
+//            Column::make('created_at'),
+//            Column::make('updated_at'),
+            Column::computed('action')
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
         ];
     }
 

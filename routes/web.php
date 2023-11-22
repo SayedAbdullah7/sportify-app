@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('user', \App\Http\Controllers\UserController::class);
     Route::resource('admin', \App\Http\Controllers\AdminController::class);
     Route::resource('stadium-owner', \App\Http\Controllers\StadiumOwnerController::class);
-    Route::resource('sport', \App\Http\Controllers\SportsController::class);
+    Route::resource('sport', \App\Http\Controllers\SportController::class);
     Route::resource('stadium-type', \App\Http\Controllers\StadiumTypeController::class);
     Route::resource('facility', \App\Http\Controllers\FacilityController::class);
 
@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
 });
 Route::get('/update/database', [\App\Http\Controllers\UpdateController::class, 'database']);
 Route::get('/test', function () {
+    return $user = User::where('id',1)->update(['id'=>1]);
 //    $facility4 = '100';
 //    return "$facili";
     $user = 1;

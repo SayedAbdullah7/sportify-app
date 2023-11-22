@@ -67,7 +67,14 @@
             <a href="{{asset(route('facility.index'))}}">
                 <div class="parent-icon"><i class='bx bx-cookie'></i>
                 </div>
-                <div class="menu-title">facilities</div>
+                <div class="menu-title text-capitalize">facilities</div>
+            </a>
+        </li>
+        <li>
+            <a href="{{asset(route('sport.index'))}}">
+                <div class="parent-icon"><i class='bx bx-cookie'></i>
+                </div>
+                <div class="menu-title text-capitalize">sports</div>
             </a>
         </li>
         <li class="menu-label">Charts & Maps</li>

@@ -64,14 +64,18 @@ Route::middleware([])->group(function () {
                 Route::post('/', [\App\Http\Controllers\Api\TeamController::class,'store']);
                 Route::post('/update', [\App\Http\Controllers\Api\TeamController::class,'update']);
                 Route::post('/add-member', [\App\Http\Controllers\Api\TeamController::class,'addMember']);
+                Route::post('/remove-member', [\App\Http\Controllers\Api\TeamController::class,'removeMember']);
+                Route::delete('/', [\App\Http\Controllers\Api\TeamController::class,'destroy']);
             });
+//        Route::apiResource('team', \App\Http\Controllers\TeamController::class)->only(['destroy',]);
 
-            Route::get('/sport', [\App\Http\Controllers\Api\SportController::class,'index']);
+        Route::get('/sport', [\App\Http\Controllers\Api\SportController::class,'index']);
             Route::post('/sport', [\App\Http\Controllers\Api\SportController::class,'store']);
+            Route::delete('/sport', [\App\Http\Controllers\Api\SportController::class,'destroy']);
 
             Route::get('/stadium', [\App\Http\Controllers\Api\StadiumController::class,'index']);
 
-            Route::get('/stadium', [\App\Http\Controllers\Api\StadiumController::class,'store']);
+//            Route::get('/stadium', [\App\Http\Controllers\Api\StadiumController::class,'store']);
 
 
 //            Route::apiResource('team', \App\Http\Controllers\TeamController::class)->only(['index','store']);

@@ -130,6 +130,16 @@ class TeamController extends BaseController
     }
     public function removeMember(Request $request)
     {
+        $validateUser = Validator::make($request->all(),
+            [
+                'members_id' => 'array',
+                'team_id' => 'required',
+            ]);
+
+        if($validateUser->fails()){
+            return $this->handleError('validation error',$validateUser->errors()->toArray());
+        }
+
         $user = $request->user();
         $team_id = $request->team_id;
         $user_id = $request->user_id;
@@ -151,7 +161,7 @@ class TeamController extends BaseController
             $teamUser->delete();
         }{
             $user = auth()->user();
-            $team =$user->teams()->where('id',$team_id)->first();
+            $team =$user->teams()->where('teams.id',$team_id)->first();
             if(!$team){
                 return $this->handleError('team not found');
             }
@@ -259,8 +269,34 @@ class TeamController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Team $team)
+    public function destroy(Request $request)
     {
-        //
+        $user = $request->user();
+        $team_id = $request->team_id;
+
+        $validate = Validator::make($request->all(),
+            [
+                'team_id' => [
+                    'required',
+                    Rule::exists('teams', 'id')->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+                ],
+            ]);
+
+
+        if($validate->fails()){
+            return $this->handleError('validation error',$validate->errors()->toArray());
+        }
+
+        $team = $user->teamsMade()->where('id',$team_id)->first();
+
+        if(!$team){
+            return $this->handleError('team not found');
+        }
+
+        $team->delete();
+
+        return $this->handleResponse('team deleted successfully',['teams'=>TeamResource::collection($user->teams)]);
     }
 }

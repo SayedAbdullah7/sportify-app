@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\VerificationCode;
 use App\Services\OtpService;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -201,14 +202,21 @@ class UserController extends BaseController
 //        return '';
         if ($request->user_id){
             $user = User::find($request->user_id);
-            $user->load('sports','teams','teams.sport');
 
             if(!$user){
                 return $this->handleError('user not found');
             }
+            $user->load(['sports.positions'=> function (Builder $query) use($user) {
+                $query->whereRelation('users','user_id',$user->id);
+            },'teams','teams.sport','positions']);
+
+
             return $this->handleResponse('',['user'=>new AnotherUserResource($user)]);
         }else{
-            $user = $request->user()->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','sports','teams.captain.user','friends']);
+            $user = $request->user();
+            $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user','friends','sports.positions'=> function (Builder $query) use($user) {
+                $query->whereRelation('users','user_id',$user->id);
+            }]);
             return $this->handleResponse('',['user'=>new UserResource($user),'friends_count'=>$user->friends()->count()]);
         }
 

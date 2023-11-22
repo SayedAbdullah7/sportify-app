@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\DataTables\SportDataTable;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSportsRequest;
-use App\Http\Requests\UpdateSportsRequest;
+use App\Http\Requests\StoreSportRequest;
+use App\Http\Requests\UpdateSportRequest;
 use App\Http\Resources\SportResource;
 use App\Http\Resources\TeamResource;
 use App\Http\Resources\UserResource;
+use App\Models\Position;
 use App\Models\Sport;
 use App\Models\Sports;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class SportController extends BaseController
 {
@@ -21,7 +24,7 @@ class SportController extends BaseController
     public function index()
     {
         $sports = Sport::with('positions')->get();
-        return SportResource::collection($sports);
+        return $this->handleResponse('',['user'=> SportResource::collection($sports)]);
     }
 
     /**
@@ -35,11 +38,12 @@ class SportController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSportsRequest $request)
+    public function store(StoreSportRequest $request)
     {
         $validateUser = Validator::make($request->all(),
             [
                 'sport_id' => 'required|array',
+                'position_id' => 'required|array',
             ]);
 
         if($validateUser->fails()){
@@ -52,9 +56,24 @@ class SportController extends BaseController
             return $this->handleError('sport not found');
         }
 
+        $positions_count = Position::where('sport_id',$request->sport_id)->whereIn('id',$request->position_id)->count();
+
+        if($positions_count != count($request->position_id)){
+            return $this->handleError('position not found');
+        }
+
         $user = $request->user();
-        $user->sports()->sync($request->sport_id);
-        $user->load('sports');
+        $user->sports()->syncWithoutDetaching($request->sport_id);
+        $user->positions()->syncWithoutDetaching($request->position_id);
+
+        $remove_positions = Position::whereIn('sport_id',$request->sport_id)->whereNotIn('id',$request->position_id)->pluck('id');
+        $user->positions()->detach($remove_positions);
+
+        $user->load([
+            'sports.positions'=> function (Builder $query) use($user) {
+                $query->whereRelation('users','user_id',$user->id);
+            },
+        ]);
 
         return $this->handleResponse('sports successfully updated',['user'=> new UserResource($user)]);
 
@@ -79,7 +98,7 @@ class SportController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSportsRequest $request, Sports $sports)
+    public function update(UpdateSportRequest $request, Sports $sports)
     {
         //
     }
@@ -87,8 +106,42 @@ class SportController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Sports $sports)
+    public function destroy(Request $request)
     {
-        //
+        $validateUser = Validator::make($request->all(),
+            [
+                'sport_id' => 'required|array',
+//                'position_id' => 'required|array',
+            ]);
+
+        if($validateUser->fails()){
+            return $this->handleError('validation error',$validateUser->errors()->toArray());
+        }
+
+        $sports_count = Sport::find($request->sport_id)->count();
+
+        if($sports_count != count($request->sport_id)){
+            return $this->handleError('sport not found');
+        }
+
+//        $positions_count = Position::where('sport_id',$request->sport_id)->whereIn('id',$request->position_id)->count();
+//
+//        if($positions_count != count($request->position_id)){
+//            return $this->handleError('position not found');
+//        }
+
+        $user = $request->user();
+        $user->sports()->detach($request->sport_id);
+        $remove_positions = Position::whereIn('sport_id',$request->sport_id)->pluck('id');
+        $user->positions()->detach($remove_positions);
+//        $user->load('sports','positions');
+        $user->load([
+            'sports.positions'=> function (Builder $query) use($user) {
+                $query->whereRelation('users','user_id',$user->id);
+            },
+        ]);
+
+        return $this->handleResponse('sports successfully updated',['user'=> new UserResource($user)]);
+
     }
 }

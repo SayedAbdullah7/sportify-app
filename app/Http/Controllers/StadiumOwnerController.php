@@ -42,6 +42,8 @@ class StadiumOwnerController extends Controller
      */
     public function store(StadiumOwnerRequest $request)
     {
+        return response()->json(['status'=>true,'msg'=>$request->facilities]);
+
         $stadiumOwner = new StadiumOwner();
         $stadiumOwner->name = $request->name;
         $stadiumOwner->phone = $request->phone;
@@ -74,6 +76,7 @@ class StadiumOwnerController extends Controller
                 $stadium->sports()->attach($sport);
             }
         }
+        $stadium->facilities()->sync($request->facilities);
 
         return response()->json(['status'=>true,'msg'=>'successfully created']);
     }
@@ -132,6 +135,7 @@ class StadiumOwnerController extends Controller
 //        foreach ($request->sports as $sport) {
             $stadium->sports()->sync($request->sports);
 //        }
+        $stadium->facilities()->sync($request->facilities);
         return response()->json(['status'=>true,'msg'=>'successfully updated']);
     }
 

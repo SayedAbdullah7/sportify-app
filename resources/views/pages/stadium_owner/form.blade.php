@@ -10,7 +10,6 @@
     @endisset
     @csrf
     <x-forms.text-input label="name" name="name" value="{{isset($model)?$model->name:''}}"></x-forms.text-input>
-
     <x-forms.text-input label="phone" name="phone" value="{{isset($model)?$model->phone:''}}"></x-forms.text-input>
     <x-forms.email-input label="email" name="email" value="{{isset($model)?$model->email:''}}"></x-forms.email-input>
 
@@ -20,12 +19,16 @@
     <x-forms.text-input label="latitude" name="latitude" value="{{isset($model)?$model->stadium->latitude:''}}"></x-forms.text-input>
 
 
-        <x-forms.select label="stadium type" name="stadia_type_id"
-                    :options="\App\Models\StadiumType::pluck('id','name')->toArray()"
-                    old="{{isset($model)?$model->stadium->stadium_type_id:''}}"></x-forms.select>
+    <x-forms.select label="stadium type" name="stadia_type_id"
+                :options="\App\Models\StadiumType::pluck('id','name')->toArray()"
+                old="{{isset($model)?$model->stadium->stadium_type_id:''}}"></x-forms.select>
 
     <x-forms.multi-select label="sports" name="sports[]" :options="\App\Models\Sport::pluck('name','id')->toArray()"
                           :old="isset($model)?$model->stadium->sports->pluck('id')->toArray():[]">
+    </x-forms.multi-select>
+
+    <x-forms.multi-select label="facilities" name="facilities[]" :options="\App\Models\Facility::pluck('name','id')->toArray()"
+                          :old="isset($model)?$model->stadium->facilities->pluck('id')->toArray():[]">
     </x-forms.multi-select>
 
     <!--begin::Input group-->
