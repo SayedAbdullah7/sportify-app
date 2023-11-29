@@ -24,7 +24,7 @@ class TeamController extends BaseController
     public function index(Request $request)
     {
         $user = $request->user();
-        $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user']);
+        $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user','teams.captain.position']);
         return $this->handleResponse('',['teams'=>TeamResource::collection($user->teams)]);
     }
 
@@ -132,7 +132,7 @@ class TeamController extends BaseController
     {
         $validateUser = Validator::make($request->all(),
             [
-                'members_id' => 'array',
+//                'members_id' => 'array',
                 'team_id' => 'required',
             ]);
 
@@ -143,17 +143,17 @@ class TeamController extends BaseController
         $user = $request->user();
         $team_id = $request->team_id;
         $user_id = $request->user_id;
-        $members_id = $request->members_id;
+        $member_id = $request->member_id;
 
-        if ($user_id && $user_id != auth()->user()->id){
-            $user = User::find($user_id);
+        if ($member_id && $member_id != $user->id){ // remove another member
+            $member = User::find($member_id);
 
             $team = $user->teamsMade()->where('id',$team_id)->first();
             if(!$team){
                 return $this->handleError('team not found');
             }
 
-            $teamUser = $team->teamUsers()->where('user_id',$user_id)->first();
+            $teamUser = $team->teamUsers()->where('user_id',$member_id)->first();
             if(!$teamUser){
                 return $this->handleError('user not found in team');
             }
@@ -164,6 +164,10 @@ class TeamController extends BaseController
             $team =$user->teams()->where('teams.id',$team_id)->first();
             if(!$team){
                 return $this->handleError('team not found');
+            }
+            $team = $user->teamsMade()->where('id',$team_id)->first();
+            if(!$team){
+                return $this->handleError('you cant remove yourself');
             }
             $teamUser = $team->teamUsers()->where('user_id',$user_id)->delete();
 

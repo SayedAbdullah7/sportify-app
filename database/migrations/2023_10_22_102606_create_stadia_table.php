@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('stadia', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedSmallInteger('price');
             $table->string('location_link')->nullable();
             $table->string('longitude')->nullable();
             $table->string('latitude')->nullable();

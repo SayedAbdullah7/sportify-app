@@ -109,7 +109,11 @@ class UserController extends BaseController
 //            $user->verificationCodes()->delete();
 
             $token = $user->createToken('app-token')->plainTextToken;
-            $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','sports','teams.captain.user']);
+            $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user','friends',
+                    'sports.positions'=> function (Builder $query) use($user) {
+                        $query->whereRelation('users','user_id',$user->id);
+                    },
+                ]);
 
             $response = [
                 'user'=>new UserResource($user),
@@ -184,7 +188,11 @@ class UserController extends BaseController
         VerificationCode::where('phone',$verificationCode->phone)->delete();
 
         $token = $user->createToken('app-token')->plainTextToken;
-        $user->load(['teams.teamUsers.position','teams.sport','friends','sports']);
+        $user->load(['teams.teamUsers.position','teams.sport','friends',
+            'sports.positions'=> function (Builder $query) use($user) {
+                $query->whereRelation('users','user_id',$user->id);
+            },
+            ]);
         $response = [
             'user'=>new UserResource($user),
             'token'=>$token,

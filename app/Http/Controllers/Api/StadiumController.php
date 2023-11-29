@@ -56,16 +56,29 @@ class StadiumController extends BaseController
 //        $request->is_fullteam;
         $start = $request->start;
         $end = $request->end;
+        $stadium = Stadium::find($request->stadium_id);
+        $user = $request->user();
+
+
+        $match = new GameMatch();
+        $match->start = $start;
+        $match->end = $end;
+        $match->stadium_id = $request->stadium_id;
+        $match->user_id = $user->id;
+
         if($request->is_fullteam){
+            $match->is_completed = 1;
 
         }else{
+            $match->is_completed = 0;
+
             $request->age_category;
             $request->sport_id;
             $request->audience;
             $request->special_note;
         }
 
-        $match = GameMatch::
+
 
 
     }
