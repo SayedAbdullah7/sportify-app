@@ -42,7 +42,7 @@ class UserResource extends JsonResource
             'sports'=> SportResource::collection($this->whenLoaded('sports')),
             'positions'=> PositionResource::collection($this->whenLoaded('positions')),
 
-
+            'friends_count' => $this->whenCounted('friends'),
             'friends'=> AnotherUserResource::collection($this->whenLoaded('friends')),
             'pending_friends_to'=> AnotherUserResource::collection($this->whenLoaded('pendingFriendsTo')),
             'pending_friends_from'=> AnotherUserResource::collection($this->whenLoaded('pendingFriendsFrom')),

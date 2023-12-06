@@ -46,6 +46,11 @@ class AnotherUserResource extends JsonResource
             'teams'=> TeamResource::collection($this->whenLoaded('teams')),
             'team_users'=> TeamUserResource::collection($this->whenLoaded('teamUsers')),
             'sports'=> SportResource::collection($this->whenLoaded('sports')),
+            'friends_count' => $this->whenCounted('friends'),
+            'friends'=> self::collection($this->whenLoaded('friends')),
+            'pending_friends_to'=> self::collection($this->whenLoaded('pendingFriendsTo')),
+            'pending_friends_from'=> self::collection($this->whenLoaded('pendingFriendsFrom')),
+
         ];
 
     }

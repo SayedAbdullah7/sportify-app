@@ -23,7 +23,18 @@ class SportController extends BaseController
      */
     public function index()
     {
-        $sports = Sport::with('positions')->get();
+        if( $user = Request()->user()){
+            $query = function (Builder $query) use($user) {
+                $query->whereRelation('users','user_id',$user->id);
+            };
+            $sports = Sport::with(['positions','mypositions'=> $query])->get();
+//            $sports = Sport::with('positions')->get();
+
+//            $user = $this->getUserData($user);
+//            $sports = $user->sports;
+        }else{
+            $sports = Sport::with('positions')->get();
+        }
         return $this->handleResponse('',['user'=> SportResource::collection($sports)]);
     }
 
@@ -68,12 +79,12 @@ class SportController extends BaseController
 
         $remove_positions = Position::whereIn('sport_id',$request->sport_id)->whereNotIn('id',$request->position_id)->pluck('id');
         $user->positions()->detach($remove_positions);
-
-        $user->load([
-            'sports.positions'=> function (Builder $query) use($user) {
-                $query->whereRelation('users','user_id',$user->id);
-            },
-        ]);
+        $user = $this->getUserData($user);
+//        $user->load([
+//            'sports.positions'=> function (Builder $query) use($user) {
+//                $query->whereRelation('users','user_id',$user->id);
+//            },
+//        ]);
 
         return $this->handleResponse('sports successfully updated',['user'=> new UserResource($user)]);
 
@@ -134,14 +145,24 @@ class SportController extends BaseController
         $user->sports()->detach($request->sport_id);
         $remove_positions = Position::whereIn('sport_id',$request->sport_id)->pluck('id');
         $user->positions()->detach($remove_positions);
+        $user->load('sports.positions');
+        $user = $this->getUserData($user);
 //        $user->load('sports','positions');
-        $user->load([
-            'sports.positions'=> function (Builder $query) use($user) {
-                $query->whereRelation('users','user_id',$user->id);
-            },
-        ]);
+//        $user->load([
+//            'sports.positions'=> function (Builder $query) use($user) {
+//                $query->whereRelation('users','user_id',$user->id);
+//            },
+//        ]);
 
         return $this->handleResponse('sports successfully updated',['user'=> new UserResource($user)]);
 
+    }
+
+    private function getUserData($user){
+        $query = function (Builder $query) use($user) {
+            $query->whereRelation('users','user_id',$user->id);
+        };
+        $user->load(['sports.positions','sports.mypositions'=> $query]);
+        return $user;
     }
 }

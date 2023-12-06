@@ -81,6 +81,11 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsToMany(Position::class);
     }
+//    public function mypositions()
+//    {
+//        return $this->belongsToMany(Position::class);
+//    }
+
     public function friendsTo(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(__CLASS__, 'friends', 'user_id', 'friend_id')
@@ -127,8 +132,6 @@ class User extends Authenticatable implements HasMedia
     {
         return  $this->pendingFriendsFrom()->where('users.id',$user_id)->exists();
     }
-
-
 
 //    public function friends(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
 //    {

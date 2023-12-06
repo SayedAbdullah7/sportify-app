@@ -85,7 +85,7 @@ class TeamController extends BaseController
         }
         DB::commit();
         $team = Team::find($team_id);
-        $team->load(['teamUsers.position','teamUsers.user','sport','captain.user']);
+        $team->load(['teamUsers.position','teamUsers.user','sport','captain.user','captain.position']);
 
         return $this->handleResponse('',['team'=>new TeamResource($team)]);
     }
@@ -142,10 +142,10 @@ class TeamController extends BaseController
 
         $user = $request->user();
         $team_id = $request->team_id;
-        $user_id = $request->user_id;
+        $user_id = $user->id;
         $member_id = $request->member_id;
 
-        if ($member_id && $member_id != $user->id){ // remove another member
+        if ($member_id && $member_id != $user_id){ // remove another member
             $member = User::find($member_id);
 
             $team = $user->teamsMade()->where('id',$team_id)->first();
@@ -159,20 +159,20 @@ class TeamController extends BaseController
             }
 
             $teamUser->delete();
-        }{
-            $user = auth()->user();
+        }else{
+            $user_id = $user->id;
             $team =$user->teams()->where('teams.id',$team_id)->first();
             if(!$team){
                 return $this->handleError('team not found');
             }
-            $team = $user->teamsMade()->where('id',$team_id)->first();
-            if(!$team){
+            $is_captain = $user->teamsMade()->where('id',$team_id)->first();
+            if($is_captain){
                 return $this->handleError('you cant remove yourself');
             }
             $teamUser = $team->teamUsers()->where('user_id',$user_id)->delete();
 
         }
-        $team->load(['teamUsers.position','teamUsers.user','sport','captain.user']);
+        $team->load(['teamUsers.position','teamUsers.user','sport','captain.user','captain.position']);
         return $this->handleResponse('',['team'=>new TeamResource($team)]);
 
     }
@@ -222,7 +222,7 @@ class TeamController extends BaseController
             return $this->handleError($res['msg']);
         }
         $team = Team::find($team_id);
-        $team->load(['teamUsers.position','teamUsers.user','sport','captain.user']);
+        $team->load(['teamUsers.position','teamUsers.user','sport','captain.user','captain.position']);
 
         return $this->handleResponse('member added successfully',['team'=>new TeamResource($team)]);
     }
@@ -265,7 +265,7 @@ class TeamController extends BaseController
         }elseif($request->deleteImage){
             $team->clearMediaCollection('team_image');
         }
-        $team->load(['teamUsers.position','teamUsers.user','sport','captain.user']);
+        $team->load(['teamUsers.position','teamUsers.user','sport','captain.user','captain.position']);
         return $this->handleResponse('successfully updated',['team'=> new TeamResource($team)]);
 
     }

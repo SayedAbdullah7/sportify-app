@@ -16,18 +16,18 @@ class SportResource extends JsonResource
     public function toArray(Request $request): array
     {
 //        return parent::toArray($request);
-        $array = [
+       return [
             'id' => $this->id,
             'name' => $this->name,
             'positions'=> PositionResource::collection($this->whenLoaded('positions')),
+            'my_positions'=> PositionResource::collection($this->whenLoaded('mypositions')),
         ];
-        if ( $this->whenLoaded('positions') && ($user = Request()->user())){
-            $available_positions = ['available_positions'=> PositionResource::collection(Position::where('sport_id',$this->id)->whereNotIn('id',$user->positions()->pluck('positions.id'))->get() )];
-//            $available_positions = ['available_positions'=> self::collection(Position::where('sport_id',$this->id)->take(1)->get() )];
-        }else{
-            $available_positions=[];
-
-        }
-        return $array + $available_positions;
+//        if ( $this->relationLoaded('positions') && ($user = Request()->user())){
+//            $available_positions = ['my_positions'=> PositionResource::collection(Position::where('sport_id',$this->id)->whereIn('id',$user->positions()->pluck('positions.id'))->get() )];
+////            $available_positions = ['available_positions'=> self::collection(Position::where('sport_id',$this->id)->take(1)->get() )];
+//        }else{
+//            $available_positions=[];
+//        }
+//        return $array + $available_positions;
     }
 }

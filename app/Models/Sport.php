@@ -17,6 +17,11 @@ class Sport extends Model
     {
         return $this->hasMany(Position::class);
     }
+    public function mypositions()
+    {
+        return $this->hasMany(Position::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class);

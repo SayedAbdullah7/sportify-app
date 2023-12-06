@@ -109,11 +109,13 @@ class UserController extends BaseController
 //            $user->verificationCodes()->delete();
 
             $token = $user->createToken('app-token')->plainTextToken;
-            $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user','friends',
-                    'sports.positions'=> function (Builder $query) use($user) {
-                        $query->whereRelation('users','user_id',$user->id);
-                    },
-                ]);
+
+//            $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user','friends',
+//                    'sports.positions'=> function (Builder $query) use($user) {
+//                        $query->whereRelation('users','user_id',$user->id);
+//                    },
+//                ]);
+            $user = $this->getUserData($user);
 
             $response = [
                 'user'=>new UserResource($user),
@@ -188,11 +190,12 @@ class UserController extends BaseController
         VerificationCode::where('phone',$verificationCode->phone)->delete();
 
         $token = $user->createToken('app-token')->plainTextToken;
-        $user->load(['teams.teamUsers.position','teams.sport','friends',
-            'sports.positions'=> function (Builder $query) use($user) {
-                $query->whereRelation('users','user_id',$user->id);
-            },
-            ]);
+//        $user->load(['teams.teamUsers.position','teams.sport','friends',
+//            'sports.positions'=> function (Builder $query) use($user) {
+//                $query->whereRelation('users','user_id',$user->id);
+//            },
+//            ]);
+        $user = $this->getUserData($user);
         $response = [
             'user'=>new UserResource($user),
             'token'=>$token,
@@ -214,20 +217,29 @@ class UserController extends BaseController
             if(!$user){
                 return $this->handleError('user not found');
             }
-            $user->load(['sports.positions'=> function (Builder $query) use($user) {
-                $query->whereRelation('users','user_id',$user->id);
-            },'teams','teams.sport','positions']);
+
+            $user = $this->getUserData($user);
 
 
             return $this->handleResponse('',['user'=>new AnotherUserResource($user)]);
         }else{
             $user = $request->user();
-            $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user','friends','sports.positions'=> function (Builder $query) use($user) {
-                $query->whereRelation('users','user_id',$user->id);
-            }]);
+            $user = $this->getUserData($user);
+//            $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user','teams.captain.position','friends','sports.positions']);
+//            $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user','teams.captain.position','friends','sports.positions'=> function (Builder $query) use($user) {
+//                $query->whereRelation('users','user_id',$user->id);
+//            }]);
             return $this->handleResponse('',['user'=>new UserResource($user),'friends_count'=>$user->friends()->count()]);
         }
 
+    }
+    private function getUserData($user){
+        $user->loadCount('friends');
+        $query = function (Builder $query) use($user) {
+            $query->whereRelation('users','user_id',$user->id);
+        };
+        $user->load(['teams.teamUsers.position','teams.teamUsers.user','teams.sport','teams.captain.user','teams.captain.position','friends','sports.positions','sports.mypositions'=> $query]);
+        return $user;
     }
 
     /**
